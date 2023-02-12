@@ -18,6 +18,12 @@
         android:layout_height="wrap_content"
         android:hint="Password"/>
 
+    <EditText
+        android:id="@+id/namedEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Name"/>
+
     <Button
         android:id="@+id/registerButton"
         android:layout_width="match_parent"

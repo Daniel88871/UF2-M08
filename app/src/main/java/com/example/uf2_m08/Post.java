@@ -11,6 +11,7 @@ public class Post {
     public String mediaUrl;
     public String mediaType;
     public Map<String, Boolean> likes = new HashMap<>();
+    public Map<String, Boolean> retweets = new HashMap<>();
     // Constructor vacio requerido por Firestore
     public Post() {}
     public Post(String uid, String author, String authorPhotoUrl, String

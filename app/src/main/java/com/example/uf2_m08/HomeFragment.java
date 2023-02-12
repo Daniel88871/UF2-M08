@@ -95,6 +95,19 @@ public class HomeFragment extends Fragment {
                                 FieldValue.delete() : true);
             });
 
+            // Gestion de retweets
+            if (post.retweets.containsKey(uid))
+                holder.retweetImageView.setImageResource(R.drawable.rt_on);
+            else
+                holder.retweetImageView.setImageResource(R.drawable.rt_off);
+            holder.numRetweetsTextView.setText(String.valueOf(post.retweets.size()));
+            holder.retweetImageView.setOnClickListener(view -> {
+                FirebaseFirestore.getInstance().collection("posts")
+                        .document(postKey)
+                        .update("retweets." + uid, post.retweets.containsKey(uid) ?
+                                FieldValue.delete() : true);
+            });
+
             // Miniatura de media
             if (post.mediaUrl != null) {
                 holder.mediaImageView.setVisibility(View.VISIBLE);
@@ -110,15 +123,25 @@ public class HomeFragment extends Fragment {
             } else {
                 holder.mediaImageView.setVisibility(View.GONE);
             }
+
+            holder.papeleraImageView.setVisibility(View.VISIBLE);
+            holder.papeleraImageView.setOnClickListener(view -> {
+                FirebaseFirestore.getInstance().collection("posts")
+                        .document(postKey)
+                        .delete();
+            });
         }
 
         class PostViewHolder extends RecyclerView.ViewHolder {
-            ImageView authorPhotoImageView, likeImageView, mediaImageView;
-            TextView authorTextView, contentTextView, numLikesTextView;
+            ImageView authorPhotoImageView, likeImageView, retweetImageView,mediaImageView, papeleraImageView;
+            TextView authorTextView, contentTextView, numLikesTextView, numRetweetsTextView;
             PostViewHolder(@NonNull View itemView) {
                 super(itemView);
-                authorPhotoImageView = itemView.findViewById(R.id.authorPhotoImageView);
+                authorPhotoImageView = itemView.findViewById(R.id.photoImageView);
                 likeImageView = itemView.findViewById(R.id.likeImageView);
+                retweetImageView = itemView.findViewById(R.id.retweetImageView);
+                numRetweetsTextView = itemView.findViewById(R.id.numRetweetsTextView);
+                papeleraImageView = itemView.findViewById(R.id.papeleraImageView);
                 mediaImageView = itemView.findViewById(R.id.mediaImage);
                 authorTextView = itemView.findViewById(R.id.authorTextView);
                 contentTextView = itemView.findViewById(R.id.contentTextView);

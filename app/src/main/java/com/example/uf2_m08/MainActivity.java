@@ -42,9 +42,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationView navigationView = binding.navView;
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
-        mAppBarConfiguration = new AppBarConfiguration.Builder()
-                .setOpenableLayout(drawer)
-                .build();
+        mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.homeFragment, R.id.profileFragment, R.id.signOutFragment).setOpenableLayout(drawer).build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
@@ -59,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
 
-                if(user != null && photo != null){
+                if(!isDestroyed() && photo != null && user != null){
                     if(user.getPhotoUrl() != null)
                         Glide.with(MainActivity.this)
                                 .load(user.getPhotoUrl().toString())
@@ -71,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
                     if(user.getEmail() != null)
                         email.setText(user.getEmail());
+
                 }
             }
         });
@@ -78,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         FirebaseFirestore.getInstance().setFirestoreSettings(new FirebaseFirestoreSettings.Builder()
                 .setPersistenceEnabled(false)
                 .build());
+
     }
 
     @Override
@@ -92,5 +92,17 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Get a reference to the header view
+        NavigationView navigationView = binding.navView;
+        View header = navigationView.getHeaderView(0);
+        // Get a reference to the photo image view
+        ImageView photo = header.findViewById(R.id.photoImageView);
+        // Clear any pending image loading requests
+        Glide.with(this).clear(photo);
     }
 }
